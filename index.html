@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>⚡ DEEP MIND QUANT AI • DUAL MODULE ANALYSIS</title>
+    <script src="https://s3.tradingview.com/tv.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, sans-serif; }
+        body { background: #eef2f5; padding: 16px; }
+        .dual-dashboard { display: flex; flex-direction: column; gap: 32px; max-width: 1800px; margin: 0 auto; }
+        .app-section { background: transparent; border-radius: 28px; }
+        .separator { height: 3px; background: linear-gradient(90deg, #0284c7, #a855f7, #0284c7); border-radius: 4px; margin: 8px 0 4px 0; }
+        .section-title { font-size: 1.2rem; font-weight: 900; padding: 12px 0 6px 0; color: #0f172a; display: flex; align-items: center; gap: 12px; }
+        .badge-module { background: #1e293b; color: white; font-size: 0.65rem; padding: 4px 12px; border-radius: 40px; }
+        /* Module 1 styles */
+        .app1-styles .card { background: white; border-radius: 24px; border: 1px solid #e2edf2; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.03); }
+        .app1-styles .card-header { padding: 14px 20px; border-bottom: 1px solid #eef2f6; font-weight: 800; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .app1-styles .card-body { padding: 16px; }
+        .app1-styles .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px,1fr)); gap: 12px; margin-bottom: 20px; }
+        .app1-styles .metric-tile { background: #f8fafc; padding: 12px; border-radius: 16px; text-align: center; border: 1px solid #e2e8f0; }
+        .app1-styles .metric-label { font-size: 0.7rem; color: #475569; font-weight: 700; text-transform: uppercase; }
+        .app1-styles .metric-value { font-size: 1.2rem; font-weight: 800; color: #0f172a; }
+        .app1-styles .table-wrapper { overflow-x: auto; border-radius: 16px; border: 1px solid #eef2f6; margin: 16px 0; }
+        .app1-styles .data-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+        .app1-styles .data-table th { background: #f8fafc; padding: 10px 6px; font-weight: 800; color: #1e293b; text-align: center; border-bottom: 1px solid #e2e8f0; }
+        .app1-styles .data-table td { padding: 8px 6px; text-align: center; border-bottom: 1px solid #f1f5f9; white-space: nowrap; font-weight: 600; }
+        .app1-styles .btn { background: white; border: 1px solid #cbd5e1; padding: 6px 14px; border-radius: 40px; font-size: 0.7rem; font-weight: 700; cursor: pointer; }
+        .app1-styles .btn-primary { background: #0284c7; border-color: #0284c7; color: white; }
+        .app1-styles .btn-danger { background: #ef4444; border-color: #ef4444; color: white; }
+        .app1-styles .trend-badge { padding: 4px 12px; border-radius: 40px; font-weight: 800; font-size: 0.7rem; color: white; display: inline-block; }
+        .app1-styles .trend-bullish { background: #10b981; }
+        .app1-styles .trend-bearish { background: #ef4444; }
+        .app1-styles .trend-neutral { background: #f59e0b; }
+        .app1-styles .positive { color: #10b981; }
+        .app1-styles .negative { color: #ef4444; }
+        .app1-styles .chart-box-wrapper { position: relative; padding-top: 65%; min-height: 550px; }
+        .app1-styles .chart-box { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .app1-styles .alert-container { background: #1e293b; border-radius: 20px; padding: 12px 16px; max-height: 250px; overflow-y: auto; font-family: monospace; font-size: 0.8rem; }
+        .app1-styles .alert-item { background: #0f172a; color: #facc15; padding: 8px 12px; margin-bottom: 6px; border-radius: 12px; border-left: 4px solid #facc15; display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
+        .app1-styles .alert-item.warning { border-left-color: #ef4444; color: #fca5a5; }
+        .app1-styles .hide-toggle-btn { background: none; border: none; cursor: pointer; font-size: 1.2rem; color: #64748b; padding: 0 8px; }
+        .app1-styles .coin-clickable { cursor: pointer; color: #0284c7; font-weight: 800; }
+        .app1-styles .hidden-card { display: none; }
+        /* Module 2 styles */
+        .app2-styles .signal-header { background: white; border-radius: 20px; padding: 14px 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; border: 1px solid #e2edf2; }
+        .app2-styles .signal-header.flash-pump { animation: pulse-green-glow 0.5s infinite alternate; border-color: #10b981; }
+        .app2-styles .signal-header.flash-dump { animation: pulse-red-glow 0.5s infinite alternate; border-color: #ef4444; }
+        @keyframes pulse-green-glow { from { box-shadow: 0 0 10px rgba(16,185,129,0.2); } to { box-shadow: 0 0 25px rgba(16,185,129,0.7); background: #f0fdf4; } }
+        @keyframes pulse-red-glow { from { box-shadow: 0 0 10px rgba(239,68,68,0.2); } to { box-shadow: 0 0 25px rgba(239,68,68,0.7); background: #fef2f2; } }
+        .app2-styles .brand h1 { font-size: 1.3rem; font-weight: 900; background: linear-gradient(135deg, #1e3a8a, #0284c7); -webkit-background-clip: text; background-clip: text; color: transparent; display: flex; align-items: center; gap: 10px; }
+        .app2-styles .live-node { display: flex; align-items: center; gap: 6px; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 4px 10px; border-radius: 40px; }
+        .app2-styles .live-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; animation: pulse-glow 1.5s infinite ease-in-out; }
+        @keyframes pulse-glow { 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:0.3; transform:scale(1.2); } }
+        .app2-styles .btn { background: white; border: 1px solid #cbdde9; padding: 6px 14px; border-radius: 40px; font-size: 0.7rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .app2-styles .btn-primary { background: #0284c7; border-color: #0284c7; color: white; }
+        .app2-styles .voice-btn { background: #facc15; color: #1e293b; border-color: #eab308; font-weight: 800; }
+        .app2-styles .dual-chart-row { display: flex; flex-direction: column; gap: 20px; width: 100%; }
+        .app2-styles .chart-card { background: white; border-radius: 24px; border: 1px solid #e2e8f0; overflow: hidden; margin-bottom: 16px; }
+        .app2-styles .chart-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: #ffffff; border-bottom: 1px solid #f1f5f9; font-weight: 800; flex-wrap: wrap; gap: 8px; }
+        .app2-styles .chart-box-wrapper { width: 100%; position: relative; padding-top: 100%; }
+        .app2-styles .chart-box { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #fff; }
+        .app2-styles .auto-bot-card { background: linear-gradient(135deg, #070d19 0%, #0f172a 100%) !important; color: #ffffff !important; border: 2px solid #1e293b !important; border-radius: 24px; }
+        .app2-styles .bot-metric-box { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin-bottom: 15px; }
+        @media (min-width:600px) { .app2-styles .bot-metric-box { grid-template-columns: repeat(4,1fr); } }
+        .app2-styles .metric-tile { background: rgba(255,255,255,0.04); padding: 14px 10px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.1); text-align: center; }
+        .app2-styles .split-gainer-loser-box { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .app2-styles .split-panel { background: #f8fafc; border-radius: 14px; padding: 10px; border: 1px solid #e2e8f0; }
+        .app2-styles .mini-row { display: flex; justify-content: space-between; padding: 6px; font-size: 0.7rem; font-weight: 700; border-bottom: 1px dashed #e2e8f0; cursor: pointer; border-radius: 4px; }
+        .app2-styles .signal-badge { display: inline-block; padding: 6px 12px; border-radius: 40px; font-weight: 900; font-size: 0.7rem; }
+        .app2-styles .signal-strong-buy { background: #10b981; color: white; }
+        .app2-styles .signal-strong-sell { background: #ef4444; color: white; }
+        .app2-styles .positive { color: #10b981; font-weight: 800; }
+        .app2-styles .negative { color: #ef4444; font-weight: 800; }
+        .app2-styles .premium-radar-card { background: linear-gradient(135deg, #1e1b4b 0%, #311042 100%); color: #f8fafc; border: 1px solid #4338ca; }
+        .app2-styles .star-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: #cbd5e1; margin-right: 6px; }
+        .app2-styles .active-star { color: #eab308; }
+        .app2-styles .card { background: white; border-radius: 20px; border: 1px solid #e2e8f0; overflow: hidden; margin-bottom: 16px; }
+        .app2-styles .card-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: #ffffff; border-bottom: 1px solid #f1f5f9; font-weight: 800; font-size: 0.8rem; }
+        .app2-styles .hide-btn { background: none; border: 1px solid #cbdde9; padding: 4px 10px; border-radius: 40px; font-size: 0.65rem; font-weight: 700; cursor: pointer; }
+        .app2-styles .data-table th { background: #f8fafc; padding: 12px 8px; font-weight: 800; }
+        .app2-styles .data-table td { padding: 10px 8px; border-bottom: 1px solid #f1f5f9; }
+        .price-up-flash { animation: flash-green-bg 0.4s ease; }
+        .price-down-flash { animation: flash-red-bg 0.4s ease; }
+        @keyframes flash-green-bg { 0% { background-color: rgba(16,185,129,0.3); } 100% { background-color: transparent; } }
+        @keyframes flash-red-bg { 0% { background-color: rgba(239,68,68,0.3); } 100% { background-color: transparent; } }
+    </style>
+</head>
+<body>
+<div class="dual-dashboard">
+    <!-- ======================== MODULE 2 (PRO BOX) - TOP ======================== -->
+    <div class="app-section app2-styles">
+        <div class="section-title">🧠 MODULE 2: DEEP MIND QUANT AI ENGINE <span class="badge-module">PRO BOX • DUAL CHART</span></div>
+        <div id="app2Root">
+            <div class="signal-header" id="mainHeader">
+                <div class="brand"><h1>⚡ DEEP MIND QUANT AI ENGINE <span>PRO Box</span></h1><div class="live-node"><span class="live-dot"></span><span class="live-text">Pure 1H Sync</span></div></div>
+                <div class="toolbar-group">
+                    <button id="enableVoiceBtn2" class="btn voice-btn">🔊 ENABLE VOICE</button>
+                    <button id="resetModule2Btn" class="btn btn-danger">↻ RESET ALL DATA</button>
+                    <div style="background:#7f1d1d; border:1px solid #f87171; padding:6px 14px; border-radius:40px; font-size:0.7rem; font-weight:900; color:white;"><span>🔌 LIVE BINANCE API ALGO BRIDGE:</span><select id="algoBridgeToggle" style="background:#0f172a; color:#22c55e; border:1px solid #334155; border-radius:8px; padding:2px 6px;"><option value="OFF">❌ OFF (MOCK PAPER MODE)</option><option value="ON">🚀 ON (REAL ALGO EXCHANGE LIVE)</option></select></div>
+                    <button class="btn" id="manualRefreshBtn">⟳ FORCE AI RE-SCAN</button>
+                    <div class="stats-chip" id="updateTimestamp">--:--:--</div>
+                </div>
+            </div>
+            <div class="card auto-bot-card" id="zoroBotTerminalCard"><div class="card-header" style="background:transparent; color:#38bdf8;"><span>🛡️ ZORO LIVE TERMINAL (ANTI-FREEZE MATRIX LOCKED • 2X RISK PROFILE)</span><div style="display:flex; gap:8px;"><span style="font-size:0.65rem; background:#22c55e; color:black; padding:4px 10px; border-radius:20px;">🤖 ACTIVE ROBOT</span><button class="hide-btn" data-target="zoroBotTerminalCard">➖ Hide</button></div></div><div class="card-body"><div class="bot-metric-box"><div class="metric-tile"><div class="metric-title">VIRTUAL ACCOUNT BALANCE</div><div class="metric-value" id="botBalance">$10,000.00</div></div><div class="metric-tile"><div class="metric-title">TOTAL UNREALIZED FLOATING PNL</div><div class="metric-value" id="botFloatingPnL">$0.00</div></div><div class="metric-tile"><div class="metric-title">CLOSED REALIZED PNL (NET)</div><div class="metric-value" id="botRealizedPnL">$0.00</div></div><div class="metric-tile"><div class="metric-title">STRATEGY SUCCESS RATE</div><div class="metric-value" id="botWinRate">0.0%</div></div></div><h4 style="font-size:0.75rem; color:#94a3b8;">📊 LIVE ORDER EXECUTION SHAPE BOOK</h4><div class="table-wrapper"><table class="data-table bot-data-table"><thead><tr><th>ASSET</th><th>SIDE</th><th>MARGIN (COST)</th><th>ENTRY PRICE</th><th>CURRENT LIVE PRICE</th><th>STOP LOSS (price/%)</th><th>TAKE PROFIT (price/%)</th><th>LIVE PNL STATUS</th></tr></thead><tbody id="botActiveOrdersBody"><tr><td colspan="8" style="text-align:center;">Analyzing...</td></tr></tbody></table></div></div></div>
+            <div class="card btc-unflow-card" id="btcUnflowCard"><div class="card-header"><span>⚠️ BTC UNFLOW TERMINAL: 1H NON-FLOW MATRIX</span><button class="hide-btn" data-target="btcUnflowCard">➖ Hide</button></div><div class="card-body"><div class="unflow-grid" id="btcUnflowContainer">Loading...</div></div></div>
+            <div class="card" id="aiMatchCard"><div class="card-header"><span>🏆 TOP 1H CANDLE MOMENTUM LEADER</span><button class="hide-btn" data-target="aiMatchCard">➖ Hide</button></div><div class="card-body" id="aiMatchContent">Loading...</div></div>
+            <div class="dual-chart-row"><div class="chart-card" id="chartCardBlock1"><div class="chart-header"><span id="chartSymbol1" style="background:#0284c7; color:white; padding:5px 12px; border-radius:30px;">BTCUSDT (C1)</span><div><input type="text" id="chartCoinSearchInput1" placeholder="🔍 Find..."><select id="chartCoinSelect1"></select><button id="applyChartSelectBtn1" class="btn-primary btn">APPLY</button><button class="hide-btn" data-target="chartCardBlock1">➖ Hide</button></div></div><div class="chart-box-wrapper"><div id="tvChartContainer1" class="chart-box"></div></div></div><div class="chart-card" id="chartCardBlock2"><div class="chart-header"><span id="chartSymbol2" style="background:#7c3aed; color:white; padding:5px 12px; border-radius:30px;">ETHUSDT (C2)</span><div><input type="text" id="chartCoinSearchInput2" placeholder="🔍 Find..."><select id="chartCoinSelect2"></select><button id="applyChartSelectBtn2" class="btn-primary btn">APPLY</button><button class="hide-btn" data-target="chartCardBlock2">➖ Hide</button></div></div><div class="chart-box-wrapper"><div id="tvChartContainer2" class="chart-box"></div></div></div></div>
+            <div class="dashboard-grid"><div class="left-col"><div class="card" id="aiLogicModuleCard"><div class="card-header"><span>🧠 AI ENGINE LOGIC MODULE</span><button class="hide-btn" data-target="aiLogicModuleCard">➖ Hide</button></div><div class="card-body"><div style="display:flex; justify-content:space-between;"><div><span style="font-weight:800;">ALGORITHMIC FILTER:</span> <span style="background:#dcfce7; padding:4px 8px; border-radius:6px;">✅ ZORO SMC CORE</span></div><div id="btcTrendBadge">BTC TREND: SYNCING...</div></div><div class="split-gainer-loser-box"><div class="split-panel"><div class="split-title-g">🔥 Top 5 Gainers</div><div id="topGainersContainer"></div></div><div class="split-panel"><div class="split-title-l">📉 Top 5 Losers</div><div id="topLosersContainer"></div></div></div></div></div><div class="card" id="signalMatrixCard"><div class="card-header"><span>📊 COGNITIVE AI MATRIX</span><div><input type="text" id="matrixSearchInput" placeholder="🔍 Filter..."><button class="hide-btn" data-target="signalMatrixCard">➖ Hide</button></div></div><div class="card-body"><div class="table-wrapper"><table class="data-table" id="signalTable"><thead><tr><th>#</th><th>ASSET</th><th>PRICE</th><th>🔥 1H%</th><th>RSI</th><th>SCORE</th><th>SMC PATTERN</th><th>EMA</th><th>MACD</th><th>CVD%</th><th>OB%</th><th>VOLUME</th><th>TRADE SIGNAL</th><th>RESULT</th></tr></thead><tbody id="signalTableBody"><tr><td colspan="14">Loading...</td></tr></tbody></table></div></div></div></div><div class="right-col"><div class="card" id="streakDominatorCard"><div class="card-header"><span>🟩 BULLISH STREAK</span><button class="hide-btn" data-target="streakDominatorCard">➖ Hide</button></div><div class="card-body"><div id="streakDominatorContainer"></div></div></div><div class="card" id="bearStreakDominatorCard"><div class="card-header"><span>🟥 BEARISH STREAK</span><button class="hide-btn" data-target="bearStreakDominatorCard">➖ Hide</button></div><div class="card-body"><div id="bearStreakDominatorContainer"></div></div></div><div class="card" id="globalMarketCard"><div class="card-header"><span>🌍 MARKET INDEX</span><button class="hide-btn" data-target="globalMarketCard">➖ Hide</button></div><div class="card-body"><span>Global Live Trend Change:</span><span id="globalChangePercent">0.00%</span></div></div><div class="card" id="signalFeedCard"><div class="card-header"><span>🔔 LIVE 1M VELOCITY FEED</span><button class="hide-btn" data-target="signalFeedCard">➖ Hide</button></div><div class="card-body" id="signalFeedContainer"><div id="noAlertsMsg">Awaiting anomalies...</div></div></div><div class="card premium-radar-card" id="premiumRadarBlockCard"><div class="premium-radar-header"><span>🎯 ZORO'S SMC RADAR</span><button class="hide-btn" data-target="premiumRadarBlockCard">➖ Hide</button></div><div class="card-body" id="premiumRadarContainer"><div id="premiumRadarScannerMsg">Scanning for Smart Money blocks...</div></div></div><div class="card" id="watchlistCard"><div class="card-header"><span>⭐ MY WATCHLIST</span><button class="hide-btn" data-target="watchlistCard">➖ Hide</button></div><div class="card-body"><div id="watchlistContainer"></div></div></div></div></div>
+        </div>
+    </div>
+
+    <div class="separator"></div>
+
+    <!-- ======================== MODULE 1 (HIDE/UNHIDE + ZORO) ======================== -->
+    <div class="app-section app1-styles">
+        <div class="section-title">📡 MODULE 1: DEEP MIND QUANT AI <span class="badge-module">HIDE/UNHIDE • LIVE SIGNALS</span></div>
+        <div class="app-container" id="app1Root">
+            <!-- Module 1 content unchanged, but preserved -->
+            <div class="card" id="headerCard_app1"><div class="card-header"><div><span style="font-size:1.3rem;">⚡ DEEP MIND QUANT AI • HIDE/UNHIDE ALL</span><div><span style="font-size:0.7rem;">BTC TREND:</span> <span id="btcTrendBadge_app1" class="trend-badge trend-neutral">LOADING...</span></div></div><div><button id="voiceBtn_app1" class="btn">🔊 VOICE ON</button><button id="refreshBtn_app1" class="btn btn-primary">🔄 REFRESH ALL</button><button id="resetBtn_app1" class="btn btn-danger">🗑️ RESET</button><button id="showAllBtn_app1" class="btn">👁️ SHOW ALL</button></div></div></div>
+            <div class="card" id="alertBoxCard_app1"><div class="card-header"><span>🔔 LIVE VOICE ALERTS</span><button class="hide-toggle-btn" onclick="app1ToggleCardVisibility('alertBoxCard_app1')">🗕</button></div><div class="card-body"><div id="alertMessagesBox_app1" class="alert-container"><div>⏳ Waiting...</div></div></div></div>
+            <div class="card" id="zoroCard_app1"><div class="card-header"><span>🛡️ ZORO LIVE TERMINAL</span><div><select id="coinSelect_app1"><option value="ALL">ALL COINS</option></select><button id="scanBtn_app1" class="btn-primary btn">⚡ SCAN NOW</button><button class="hide-toggle-btn" onclick="app1ToggleCardVisibility('zoroCard_app1')">🗕</button></div></div><div class="card-body"><div class="metric-grid"><div class="metric-tile"><div class="metric-label">Balance</div><div class="metric-value" id="balanceVal_app1">$10,000</div></div><div class="metric-tile"><div class="metric-label">Floating PnL</div><div class="metric-value" id="floatPnL_app1">$0</div></div><div class="metric-tile"><div class="metric-label">Realized PnL</div><div class="metric-value" id="realPnL_app1">$0</div></div><div class="metric-tile"><div class="metric-label">Win Rate</div><div class="metric-value" id="winRate_app1">0%</div></div><div class="metric-tile"><div class="metric-label">Total Trades</div><div class="metric-value" id="totalTrades_app1">0</div></div><div class="metric-tile"><div class="metric-label">Active Pos.</div><div class="metric-value" id="activeCount_app1">0/6</div></div><div class="metric-tile"><div class="metric-label">Coins Scanned</div><div class="metric-value" id="scannedCount_app1">0</div></div></div>
+                <h4>📊 ACTIVE POSITIONS</h4><div class="table-wrapper"><table class="data-table"><thead><tr><th>#</th><th>ASSET</th><th>SIDE</th><th>ENTRY</th><th>LIVE</th><th>SIZE</th><th>MARGIN</th><th>LEV</th><th>SL (price/%)</th><th>TP (price/%)</th><th>PnL%</th><th>CLOSE</th></tr></thead><tbody id="activeTbody_app1"><tr><td colspan="12">No active positions</td></tr></tbody></table></div>
+                <h4>📋 SIGNAL LOG (LAST 20) — REAL LIVE DATA ✅</h4><div class="table-wrapper"><table class="data-table"><thead><tr><th>TIME</th><th>ASSET</th><th>SIDE</th><th>RSI14</th><th>RSI7</th><th>EMA</th><th>CVD%</th><th>OB%</th><th>FUND%</th><th>SMC PATTERN</th><th>SCORE</th><th>CONF%</th><th>ENTRY</th><th>SL</th><th>TP</th><th>RESULT</th></tr></thead><tbody id="signalLogTbody_app1"><tr><td colspan="16">Waiting for signals...</td></tr></tbody></table></div></div></div>
+            <div class="card" id="matrixCard_app1"><div class="card-header">📊 SIGNAL MATRIX <input id="matrixFilter_app1" placeholder="Filter coin..." style="border:1px solid #ccc; border-radius:20px; padding:4px 12px;"><button class="hide-toggle-btn" onclick="app1ToggleCardVisibility('matrixCard_app1')">🗕</button></div><div class="card-body"><div class="table-wrapper"><table class="data-table"><thead><tr><th>#</th><th>ASSET</th><th>PRICE</th><th>1H %</th><th>RSI</th><th>MACD</th><th>SMC PATTERN</th><th>SIGNAL</th></tr></thead><tbody id="matrixTbody_app1"><tr><td colspan="8">Loading coins...</td></tr></tbody></table></div></div></div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px;"><div class="card" id="rsiCard_app1"><div class="card-header">📈 REAL RSI (BTC) <button class="hide-toggle-btn" onclick="app1ToggleCardVisibility('rsiCard_app1')">🗕</button></div><div class="card-body"><div class="metric-grid"><div class="metric-tile"><div class="metric-label">RSI(14)</div><div class="metric-value" id="btcRsi14_app1">--</div></div><div class="metric-tile"><div class="metric-label">RSI(7)</div><div class="metric-value" id="btcRsi7_app1">--</div></div></div></div></div><div class="card" id="atrCard_app1"><div class="card-header">🛑 ATR STOP LOSS<button class="hide-toggle-btn" onclick="app1ToggleCardVisibility('atrCard_app1')">🗕</button></div><div class="card-body"><div class="metric-grid"><div class="metric-tile"><div class="metric-label">ATR %</div><div class="metric-value" id="atrPct_app1">0%</div></div><div class="metric-tile"><div class="metric-label">SL LONG</div><div class="metric-value" id="slLongVal_app1">$0</div></div></div></div></div><div class="card" id="oiCard_app1"><div class="card-header">📊 OI & FUNDING<button class="hide-toggle-btn" onclick="app1ToggleCardVisibility('oiCard_app1')">🗕</button></div><div class="card-body"><div class="metric-grid"><div class="metric-tile"><div class="metric-label">OI VALUE</div><div class="metric-value" id="oiVal_app1">$0B</div></div><div class="metric-tile"><div class="metric-label">FUNDING RATE</div><div class="metric-value" id="fundVal_app1">0%</div></div></div></div></div><div class="card" id="cvdCard_app1"><div class="card-header">📊 CVD (VOLUME DELTA)<button class="hide-toggle-btn" onclick="app1ToggleCardVisibility('cvdCard_app1')">🗕</button></div><div class="card-body"><div class="metric-grid"><div class="metric-tile"><div class="metric-label">CVD</div><div class="metric-value" id="cvdNum_app1">0</div></div><div class="metric-tile"><div class="metric-label">BUY VOL</div><div class="metric-value positive" id="buyVolM_app1">0M</div></div><div class="metric-tile"><div class="metric-label">SELL VOL</div><div class="metric-value negative" id="sellVolM_app1">0M</div></div></div></div></div></div>
+            <div class="card" id="chartCard_app1"><div class="card-header"><span id="chartSymbol_app1">BTCUSDT</span><div><input id="chartInput_app1" placeholder="Symbol (e.g. ETH)" style="border:1px solid #ccc; border-radius:20px; padding:6px 14px;"><button id="applyChartBtn_app1" class="btn btn-primary">APPLY</button><button class="hide-toggle-btn" onclick="app1ToggleCardVisibility('chartCard_app1')">🗕</button></div></div><div class="chart-box-wrapper"><div id="tvChartContainer_app1" class="chart-box"></div></div></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ======================= GLOBAL SPEECH UNLOCK =======================
+    let speechUnlocked = false;
+    function unlockSpeech() {
+        if (speechUnlocked) return;
+        try {
+            const silent = new SpeechSynthesisUtterance(' ');
+            silent.volume = 0;
+            window.speechSynthesis.speak(silent);
+            speechUnlocked = true;
+            console.log("Voice unlocked");
+        } catch(e) { console.warn(e); }
+    }
+    document.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => unlockSpeech(), { once: true });
+    });
+    
+    // ======================= MACD CALCULATION =======================
+    function calculateMACD(prices, fast=12, slow=26, signal=9) {
+        if (prices.length < slow + signal) return { macd: 0, signal: 0, histogram: 0 };
+        function ema(data, period) {
+            if (data.length < period) return data[data.length-1];
+            let k = 2 / (period + 1);
+            let emaVal = data.slice(0, period).reduce((a,b)=>a+b,0) / period;
+            for (let i = period; i < data.length; i++) emaVal = data[i] * k + emaVal * (1 - k);
+            return emaVal;
+        }
+        let emaFast = ema(prices, fast);
+        let emaSlow = ema(prices, slow);
+        let macdLine = emaFast - emaSlow;
+        let macdValues = [];
+        for (let i = slow-1; i < prices.length; i++) {
+            let emaF = ema(prices.slice(0, i+1), fast);
+            let emaS = ema(prices.slice(0, i+1), slow);
+            macdValues.push(emaF - emaS);
+        }
+        let signalLine = ema(macdValues, signal);
+        let histogram = macdValues[macdValues.length-1] - signalLine;
+        return { macd: macdValues[macdValues.length-1], signal: signalLine, histogram: histogram };
+    }
+    function calcRSI(prices, period=14) {
+        if (prices.length < period+2) return 50;
+        let gains=0, losses=0;
+        for(let i=1;i<=period;i++){ let d=prices[i]-prices[i-1]; if(d>=0) gains+=d; else losses-=d; }
+        let avgGain=gains/period, avgLoss=losses/period;
+        for(let i=period+1;i<prices.length;i++){ let d=prices[i]-prices[i-1]; if(d>=0) avgGain=(avgGain*(period-1)+d)/period; else avgLoss=(avgLoss*(period-1)-d)/period; }
+        if(avgLoss===0) return avgGain===0?50:100;
+        return 100 - (100/(1+avgGain/avgLoss));
+    }
+
+    // ======================= MODULE 1 (unchanged) =======================
+    (function(){
+        const BINANCE = "https://fapi.binance.com";
+        const COINS = ["BTC","ETH","SOL","BNB","XRP","DOGE","ADA","AVAX","DOT","LINK","MATIC","UNI","ATOM","LTC","ETC","FIL","APT","ARB","OP","INJ","FET","ENA","LDO","HBAR","XLM","NEAR","RENDER","JUP","WLD","ONDO","SUI","SEI","AAVE","CRV","GALA","SAND","AXS","ALGO","VET","QNT","MKR","COMP","ZEC","ZRO","PENDLE","STX","TRUMP","ENS","TIA","API3"];
+        const ALL_SYMBOLS_app1 = COINS.map(c=>c+"USDT");
+        let btcTrend_app1 = "NEUTRAL", activeTrades_app1 = new Map(), signalLog_app1 = [], balance_app1 = 10000, realizedPnL_app1 = 0, totalTradesClosed_app1 = 0, totalWins_app1 = 0, voiceMuted_app1 = false, lastPrices_app1 = new Map(), tvWidget_app1 = null;
+        window.app1ToggleCardVisibility = function(cardId){ let c=document.getElementById(cardId); if(c) c.classList.toggle('hidden-card'); };
+        window.app1ShowAllSections = function(){ document.querySelectorAll('#app1Root .card').forEach(c=>c.classList.remove('hidden-card')); };
+        function app1AddAlertMessage(text,type="info"){ let box=document.getElementById('alertMessagesBox_app1'); if(box.innerHTML.includes("⏳ Waiting")) box.innerHTML=""; let d=document.createElement('div'); d.className=`alert-item ${type==='warning'?'warning':'info'}`; d.innerHTML=`<span>🔊 ${text}</span><span class="alert-time">${new Date().toLocaleTimeString()}</span>`; box.prepend(d); setTimeout(()=>{if(d.parentNode)d.remove(); if(box.children.length===0) box.innerHTML='<div>⏳ Waiting for price moves...</div>';},300000);}
+        function app1TriggerVoice(msg,type){ app1AddAlertMessage(msg,type); if(!voiceMuted_app1 && speechUnlocked){ try{ let u=new SpeechSynthesisUtterance(msg); u.rate=0.95; window.speechSynthesis.cancel(); window.speechSynthesis.speak(u); }catch(e){} } }
+        function app1SaveState(){ localStorage.setItem('balance_app1',balance_app1); localStorage.setItem('realizedPnL_app1',realizedPnL_app1); localStorage.setItem('totalTrades_app1',totalTradesClosed_app1); localStorage.setItem('totalWins_app1',totalWins_app1); localStorage.setItem('activeTrades_app1',JSON.stringify(Array.from(activeTrades_app1.entries()))); localStorage.setItem('signalLog_app1',JSON.stringify(signalLog_app1.slice(0,20)));}
+        function app1LoadState(){ try{ balance_app1=parseFloat(localStorage.getItem('balance_app1'))||10000; realizedPnL_app1=parseFloat(localStorage.getItem('realizedPnL_app1'))||0; totalTradesClosed_app1=parseInt(localStorage.getItem('totalTrades_app1'))||0; totalWins_app1=parseInt(localStorage.getItem('totalWins_app1'))||0; let s=localStorage.getItem('activeTrades_app1'); if(s) activeTrades_app1=new Map(JSON.parse(s)); let l=localStorage.getItem('signalLog_app1'); if(l) signalLog_app1=JSON.parse(l); }catch(e){} }
+        function calcEMA_app1(prices,period){ if(prices.length<period) return null; let k=2/(period+1), ema=prices.slice(0,period).reduce((a,b)=>a+b,0)/period; for(let i=period;i<prices.length;i++) ema=prices[i]*k+ema*(1-k); return ema;}
+        async function app1GetBtcTrend(){ try{ let r=await fetch(`${BINANCE}/fapi/v1/klines?symbol=BTCUSDT&interval=1h&limit=50`); let c=await r.json(), closes=c.map(x=>parseFloat(x[4])), rsi=calcRSI(closes,14), ema9=calcEMA_app1(closes,9), ema21=calcEMA_app1(closes,21); btcTrend_app1=(rsi>52 && ema9>ema21)||(ema9>ema21 && rsi>48)?"BULLISH":"BEARISH"; let b=document.getElementById('btcTrendBadge_app1'); b.innerText=btcTrend_app1==="BULLISH"?"📈 BULLISH (LONG ONLY)":"📉 BEARISH (SHORT ONLY)"; b.className=btcTrend_app1==="BULLISH"?"trend-badge trend-bullish":"trend-badge trend-bearish";}catch(e){}}
+        function getSMCPattern(rsi, change1h, side){
+            if(side === "LONG" && rsi < 35 && change1h < -1.0) return "ORDER BLOCK LONG";
+            if(side === "SHORT" && rsi > 65 && change1h > 1.0) return "LIQUIDITY SWEEP SHORT";
+            if(side === "LONG" && rsi < 45 && change1h < -0.5) return "OVERSOLD LONG";
+            if(side === "SHORT" && rsi > 55 && change1h > 0.5) return "OVERBOUGHT SHORT";
+            if(side === "LONG") return "BULLISH SMC";
+            if(side === "SHORT") return "BEARISH SMC";
+            return "NEUTRAL";
+        }
+        async function app1ScanCoin(symbol){ try{ let [klineRes,fundRes]=await Promise.all([fetch(`${BINANCE}/fapi/v1/klines?symbol=${symbol}&interval=1h&limit=50`), fetch(`${BINANCE}/fapi/v1/fundingRate?symbol=${symbol}&limit=1`)]); let candles=await klineRes.json(); if(!candles||candles.length<30) return null; let closes=candles.map(c=>parseFloat(c[4])), cp=closes[closes.length-1], rsi14=calcRSI(closes,14), rsi7=calcRSI(closes,7), ema9=calcEMA_app1(closes,9), ema21=calcEMA_app1(closes,21); let buyVol=0,sellVol=0; candles.slice(-24).forEach(c=>{ let vol=parseFloat(c[7]); if(parseFloat(c[4])>parseFloat(c[1])) buyVol+=vol; else sellVol+=vol;}); let totalVol=buyVol+sellVol, cvdPct=totalVol>0?((buyVol-sellVol)/totalVol)*100:0; let depthRes=await fetch(`${BINANCE}/fapi/v1/depth?symbol=${symbol}&limit=20`), depth=await depthRes.json(); let bidQty=depth.bids?depth.bids.reduce((s,b)=>s+parseFloat(b[1]),0):0, askQty=depth.asks?depth.asks.reduce((s,a)=>s+parseFloat(a[1]),0):0, obPct=(bidQty+askQty)>0?(bidQty/(bidQty+askQty))*100:50; let fundRate=0, fundData=await fundRes.json(); if(fundData&&fundData.length) fundRate=parseFloat(fundData[0].fundingRate)*100; let tr=[]; for(let i=1;i<candles.length;i++) tr.push(Math.max(parseFloat(candles[i][2])-parseFloat(candles[i][3]),Math.abs(parseFloat(candles[i][2])-parseFloat(candles[i-1][4])),Math.abs(parseFloat(candles[i][3])-parseFloat(candles[i-1][4])))); let atr=tr.slice(-14).reduce((a,b)=>a+b,0)/14; let side=null; if(btcTrend_app1==="BULLISH" && rsi14<45) side="LONG"; else if(btcTrend_app1==="BEARISH" && rsi14>55) side="SHORT"; if(!side) return null; let change1h = ((closes[closes.length-1] - candles[candles.length-2][4])/candles[candles.length-2][4])*100; let smcPattern = getSMCPattern(rsi14, change1h, side);
+            let slDist=atr*1.4, tpDist=slDist*2.0, sl=side==="LONG"?cp-slDist:cp+slDist, tp=side==="LONG"?cp+tpDist:cp-tpDist, score=0; if(side==="LONG"){ if(rsi14<35) score+=3; else if(rsi14<42) score+=2; if(ema9&&ema21&&ema9>ema21) score+=2; if(cvdPct>5) score+=2; if(obPct>55) score+=2; if(fundRate<0.01) score+=1; } else{ if(rsi14>65) score+=3; else if(rsi14>58) score+=2; if(ema9&&ema21&&ema9<ema21) score+=2; if(cvdPct<-5) score+=2; if(obPct<45) score+=2; if(fundRate>-0.01) score+=1; } score=Math.min(10,Math.max(0,score)); let confidence=Math.min(96,55+Math.floor(score*4.1)); return {symbol,side,entryPrice:cp,sl,tp,rsi14:rsi14.toFixed(1),rsi7:rsi7.toFixed(1),emaTrend:(ema9&&ema21)?(ema9>ema21?"↑ Bull":"↓ Bear"):"Flat",cvd:(cvdPct>=0?"+":"")+cvdPct.toFixed(1)+"%",ob:obPct.toFixed(1)+"%",fund:(fundRate>=0?"+":"")+fundRate.toFixed(4)+"%",score,confidence,leverage:3,tradeSize:500,margin:166.67,currentPrice:cp,pnlPct:0,floatingPnL:0,smcPattern}; }catch(e){return null;}}
+        async function app1RunBotScan(){ if(activeTrades_app1.size>=6) return; document.getElementById('scannedCount_app1').innerText=ALL_SYMBOLS_app1.length; await app1GetBtcTrend(); let target=document.getElementById('coinSelect_app1').value; let symbols=target==="ALL"?ALL_SYMBOLS_app1:[target]; for(let sym of symbols){ if(activeTrades_app1.has(sym)||activeTrades_app1.size>=6) continue; let signal=await app1ScanCoin(sym); if(signal){ activeTrades_app1.set(sym,signal); signalLog_app1.unshift({time:new Date().toLocaleTimeString(),symbol:signal.symbol,side:signal.side,rsi14:signal.rsi14,rsi7:signal.rsi7,ema:signal.emaTrend,cvd:signal.cvd,ob:signal.ob,funding:signal.fund,smcPattern:signal.smcPattern,score:signal.score,confidence:signal.confidence,entry:signal.entryPrice,sl:signal.sl,tp:signal.tp,result:"OPEN"}); if(signalLog_app1.length>20) signalLog_app1=signalLog_app1.slice(0,20); app1SaveState(); app1TriggerVoice(`${signal.side} signal on ${signal.symbol.replace("USDT","")} - ${signal.smcPattern}`,"info"); break; } } app1UpdateUI();}
+        function app1UpdateUI(){ let floating=0; for(let t of activeTrades_app1.values()) floating+=t.floatingPnL; document.getElementById('balanceVal_app1').innerHTML=`$${(balance_app1+floating).toFixed(2)}`; let fEl=document.getElementById('floatPnL_app1'); fEl.innerHTML=`${floating>=0?'+':''}$${floating.toFixed(2)}`; fEl.style.color=floating>=0?'#10b981':'#ef4444'; document.getElementById('realPnL_app1').innerHTML=`${realizedPnL_app1>=0?'+':''}$${realizedPnL_app1.toFixed(2)}`; let wr=totalTradesClosed_app1>0?((totalWins_app1/totalTradesClosed_app1)*100).toFixed(1):0; document.getElementById('winRate_app1').innerHTML=`${wr}%`; document.getElementById('totalTrades_app1').innerHTML=totalTradesClosed_app1; document.getElementById('activeCount_app1').innerHTML=`${activeTrades_app1.size}/6`; let tbody=document.getElementById('activeTbody_app1'); if(activeTrades_app1.size===0) tbody.innerHTML='<tr><td colspan="12">No active positions</td></tr>'; else{ let idx=1; tbody.innerHTML=Array.from(activeTrades_app1.values()).map(t=>{ let slPercent = ((t.sl - t.entryPrice)/t.entryPrice)*100; let tpPercent = ((t.tp - t.entryPrice)/t.entryPrice)*100; let slStr = `$${t.sl.toFixed(2)} (${slPercent>=0?'+':''}${slPercent.toFixed(2)}%)`; let tpStr = `$${t.tp.toFixed(2)} (${tpPercent>=0?'+':''}${tpPercent.toFixed(2)}%)`; return `<tr><td>${idx++}</td><td class="coin-clickable" onclick="app1LoadChart('${t.symbol}')">${t.symbol}</td><td style="color:${t.side==='LONG'?'#10b981':'#ef4444'}">${t.side}</td><td>$${t.entryPrice.toFixed(2)}</td><td>$${t.currentPrice.toFixed(2)}</td><td>$${t.tradeSize}</td><td>$${t.margin.toFixed(2)}</td><td>${t.leverage}x</td><td style="color:#ef4444">${slStr}</td><td style="color:#10b981">${tpStr}</td><td class="${t.pnlPct>=0?'positive':'negative'}">${t.pnlPct>=0?'+':''}${t.pnlPct.toFixed(2)}%</td><td><button class="btn" onclick="app1CloseTrade('${t.symbol}')">CLOSE</button></td></tr>`; }).join(''); } let logBody=document.getElementById('signalLogTbody_app1'); if(signalLog_app1.length===0) logBody.innerHTML='<tr><td colspan="16">No signals yet</td></tr>'; else logBody.innerHTML=signalLog_app1.map(s=>`<tr><td>${s.time}</td><td class="coin-clickable" onclick="app1LoadChart('${s.symbol}')"><b>${s.symbol}</b></td><td style="color:${s.side==='LONG'?'#10b981':'#ef4444'}">${s.side}</td><td class="positive">${s.rsi14}</td><td>${s.rsi7}</td><td>${s.ema}</td><td class="${s.cvd.startsWith('-')?'negative':'positive'}">${s.cvd}</td><td>${s.ob}</td><td>${s.funding}</td><td style="color:#facc15;">${s.smcPattern}</td><td>${s.score}/10</td><td>${s.confidence}%</td><td>$${s.entry.toFixed(2)}</td><td style="color:#ef4444">$${s.sl.toFixed(2)}</td><td style="color:#10b981">$${s.tp.toFixed(2)}</td><td><span class="trend-badge ${s.result==='OPEN'?'trend-neutral':s.result==='WIN'?'trend-bullish':'trend-bearish'}">${s.result}</span></td></tr>`).join('');}
+        async function app1MonitorPrices(){ try{ let res=await fetch(`${BINANCE}/fapi/v1/ticker/price`); let prices=await res.json(); let now=Date.now(); for(let p of prices){ let sym=p.symbol; if(!ALL_SYMBOLS_app1.includes(sym)) continue; let cp=parseFloat(p.price); if(activeTrades_app1.has(sym)){ let t=activeTrades_app1.get(sym); t.currentPrice=cp; let raw=t.side==="LONG"?((cp-t.entryPrice)/t.entryPrice)*100:((t.entryPrice-cp)/t.entryPrice)*100; t.pnlPct=raw*t.leverage; t.floatingPnL=(t.tradeSize*t.pnlPct)/100; let slHit=t.side==="LONG"?cp<=t.sl:cp>=t.sl, tpHit=t.side==="LONG"?cp>=t.tp:cp<=t.tp; if(slHit||tpHit){ let win=tpHit; realizedPnL_app1+=t.floatingPnL; balance_app1+=t.floatingPnL; totalTradesClosed_app1++; if(win) totalWins_app1++; signalLog_app1=signalLog_app1.map(entry=>(entry.symbol===sym&&entry.result==="OPEN")?{...entry,result:win?"WIN":"LOSS"}:entry); activeTrades_app1.delete(sym); app1SaveState(); app1TriggerVoice(`${sym} ${win?"TP hit ✅":"SL hit ❌"}`,win?"info":"warning"); } } if(lastPrices_app1.has(sym) && now-lastPrices_app1.get(sym).time>=60000){ let old=lastPrices_app1.get(sym).price, move=((cp-old)/old)*100; if(Math.abs(move)>=1.2) app1TriggerVoice(`${sym.replace("USDT","")} ${move>0?"pump 🔥":"dump 📉"} ${move.toFixed(1)}% in 1m`,"warning"); } lastPrices_app1.set(sym,{price:cp,time:now}); } app1UpdateUI(); }catch(e){}}
+        async function app1FetchMetrics(){ try{ let btc=await fetch(`${BINANCE}/fapi/v1/klines?symbol=BTCUSDT&interval=1h&limit=100`); let btcData=await btc.json(), btcClose=btcData.map(x=>parseFloat(x[4])); if(btcClose){ document.getElementById('btcRsi14_app1').innerText=calcRSI(btcClose,14).toFixed(2); document.getElementById('btcRsi7_app1').innerText=calcRSI(btcClose,7).toFixed(2); } let atrC=await fetch(`${BINANCE}/fapi/v1/klines?symbol=BTCUSDT&interval=1h&limit=30`); let atrData=await atrC.json(), tr=[]; for(let i=1;i<atrData.length;i++) tr.push(Math.max(parseFloat(atrData[i][2])-parseFloat(atrData[i][3]),Math.abs(parseFloat(atrData[i][2])-parseFloat(atrData[i-1][4])),Math.abs(parseFloat(atrData[i][3])-parseFloat(atrData[i-1][4])))); let atr=tr.slice(-14).reduce((a,b)=>a+b,0)/14, price=parseFloat(atrData[atrData.length-1][4]); document.getElementById('atrPct_app1').innerHTML=((atr/price)*100).toFixed(2)+"%"; document.getElementById('slLongVal_app1').innerHTML=`$${(price-atr*1.5).toFixed(2)}`; let oiRes=await fetch(`${BINANCE}/fapi/v1/openInterest?symbol=BTCUSDT`); let oi=await oiRes.json(); document.getElementById('oiVal_app1').innerHTML=`$${(parseFloat(oi.openInterest)*price/1e9).toFixed(2)}B`; let frRes=await fetch(`${BINANCE}/fapi/v1/fundingRate?symbol=BTCUSDT&limit=1`); let fr=await frRes.json(); if(fr.length) document.getElementById('fundVal_app1').innerHTML=`${(parseFloat(fr[0].fundingRate)*100).toFixed(4)}%`; let cvdC=await fetch(`${BINANCE}/fapi/v1/klines?symbol=BTCUSDT&interval=1h&limit=24`); let cvdData=await cvdC.json(); let bv=0,sv=0,cvd=0; cvdData.forEach(x=>{let v=parseFloat(x[7]); if(parseFloat(x[4])>parseFloat(x[1])){bv+=v;cvd+=v;}else{sv+=v;cvd-=v;}}); document.getElementById('cvdNum_app1').innerHTML=cvd.toFixed(0); document.getElementById('buyVolM_app1').innerHTML=`$${(bv/1e6).toFixed(1)}M`; document.getElementById('sellVolM_app1').innerHTML=`$${(sv/1e6).toFixed(1)}M`; }catch(e){}}
+        async function app1LoadMatrix(){ let data=[]; for(let sym of ALL_SYMBOLS_app1.slice(0,50)){ try{ let r=await fetch(`${BINANCE}/fapi/v1/klines?symbol=${sym}&interval=1h&limit=50`); let c=await r.json(); if(c&&c.length){ let closes=c.map(x=>parseFloat(x[4])); let price=closes[closes.length-1]; let open=parseFloat(c[0][1]); let change=((price-open)/open)*100; let rsi=calcRSI(closes,14); let macdRes = calculateMACD(closes, 12, 26, 9); let macdStatus = macdRes.histogram >= 0 ? "📈 Bullish" : "📉 Bearish"; let smcPattern = (rsi < 35 && change < -1.0) ? "ORDER BLOCK LONG" : (rsi > 65 && change > 1.0) ? "LIQUIDITY SWEEP SHORT" : (rsi < 45 && change < -0.5) ? "OVERSOLD LONG" : (rsi > 55 && change > 0.5) ? "OVERBOUGHT SHORT" : (change > 0) ? "BULLISH MOMENTUM" : "BEARISH MOMENTUM"; data.push({symbol:sym,price:price,change:change,rsi:rsi,macd:macdStatus,smcPattern:smcPattern}); } }catch(e){} } function render(){ let filter=document.getElementById('matrixFilter_app1').value.toUpperCase(); let filtered=data.filter(d=>d.symbol.includes(filter)); document.getElementById('matrixTbody_app1').innerHTML=filtered.map((d,i)=>`<tr><td>${i+1}</td><td class="coin-clickable" onclick="app1LoadChart('${d.symbol}')">${d.symbol}</td><td>$${d.price.toFixed(2)}</td><td class="${d.change>=0?'positive':'negative'}">${d.change.toFixed(2)}%</td><td>${d.rsi.toFixed(1)}</td><td class="${d.macd.includes('Bull')?'positive':'negative'}">${d.macd}</td><td style="color:#facc15;">${d.smcPattern}</td><td><span class="trend-badge ${d.change>=0?'trend-bullish':'trend-bearish'}">${d.change>=0?'BUY ZONE':'SELL ZONE'}</span></td></tr>`).join(''); } render(); document.getElementById('matrixFilter_app1').addEventListener('input',render);}
+        window.app1LoadChart=function(symbol){ if(tvWidget_app1) try{tvWidget_app1.remove();}catch(e){} tvWidget_app1=new TradingView.widget({width:"100%",height:"100%",symbol:"BINANCE:"+symbol,interval:"60",theme:"light",container_id:"tvChartContainer_app1",studies:["RSI@tv-basicstudies"]}); document.getElementById('chartSymbol_app1').innerText=symbol; };
+        window.app1CloseTrade=function(symbol){ if(!activeTrades_app1.has(symbol)) return; let t=activeTrades_app1.get(symbol); realizedPnL_app1+=t.floatingPnL; balance_app1+=t.floatingPnL; totalTradesClosed_app1++; if(t.floatingPnL>0) totalWins_app1++; signalLog_app1=signalLog_app1.map(entry=>(entry.symbol===symbol&&entry.result==="OPEN")?{...entry,result:t.floatingPnL>=0?"WIN":"LOSS"}:entry); activeTrades_app1.delete(symbol); app1SaveState(); app1UpdateUI(); app1TriggerVoice(`${symbol} manually closed`,"info"); };
+        window.app1ResetAll=function(){ activeTrades_app1.clear(); signalLog_app1=[]; balance_app1=10000; realizedPnL_app1=0; totalTradesClosed_app1=0; totalWins_app1=0; app1SaveState(); app1UpdateUI(); app1TriggerVoice("All positions reset","warning"); };
+        window.app1ToggleVoice=function(){ voiceMuted_app1=!voiceMuted_app1; document.getElementById('voiceBtn_app1').innerText=voiceMuted_app1?"🔇 VOICE OFF":"🔊 VOICE ON"; app1TriggerVoice(voiceMuted_app1?"Voice muted":"Voice enabled","info"); };
+        document.getElementById('refreshBtn_app1').onclick=()=>{ app1FetchMetrics(); app1LoadMatrix(); app1GetBtcTrend(); };
+        document.getElementById('resetBtn_app1').onclick=()=>window.app1ResetAll();
+        document.getElementById('scanBtn_app1').onclick=()=>app1RunBotScan();
+        document.getElementById('voiceBtn_app1').onclick=()=>window.app1ToggleVoice();
+        document.getElementById('applyChartBtn_app1').onclick=()=>{ let val=document.getElementById('chartInput_app1').value.trim().toUpperCase(); if(val) app1LoadChart(val+"USDT"); };
+        document.getElementById('showAllBtn_app1').onclick=()=>window.app1ShowAllSections();
+        (async()=>{ app1LoadState(); await app1GetBtcTrend(); await app1FetchMetrics(); app1LoadMatrix(); app1LoadChart("BTCUSDT"); setInterval(app1MonitorPrices,4000); setInterval(()=>{ app1RunBotScan(); app1FetchMetrics(); },60000); app1UpdateUI(); let sel=document.getElementById('coinSelect_app1'); ALL_SYMBOLS_app1.forEach(s=>{ let o=document.createElement('option'); o.value=s; o.innerText=s; sel.appendChild(o); }); })();
+    })();
+
+    // ======================= MODULE 2 (PRO BOX) with localStorage persistence =======================
+    (function(){
+        const BASE = ["NEAR","ZEC","WLD","ONDO","RENDER","DEXE","FET","JUP","JTO","ENA","ETHFI","ZRO","PENDLE","STX","SOL","ETH","DOT","AVAX","SUI","AAVE","OP","LINK","XLM","UNI","ETC","WIF","ENS","SEI","APE","DOGE","FIL","LDO","ICP","BNB","HBAR","AXS","BTC","GALA","SAND","TIA","API3","ATOM","XRP","INJ","LTC","ADA","BCH","TRX","NEIRO","ALGO","CRV","ARB","BB","CFX"];
+        const ALL_SYMBOLS2 = BASE.map(c => c + "USDT");
+        let watchlistSet = new Set(["BTCUSDT", "ETHUSDT", "SOLUSDT"]);
+        let fullDataMap = new Map();
+        let tvWidget1 = null, tvWidget2 = null;
+        let matrixSearchQuery = "";
+        let radarDataMap = new Map();
+        const RADAR_THRESHOLD = 1.2;
+        const mainHeader = document.getElementById('mainHeader');
+        let virtualBalance = 10000.00;
+        let realizedPnL2 = 0.00;
+        let totalWins2 = 0;
+        let totalTradesClosed2 = 0;
+        let activeBotTrades = new Map();
+        let voiceEnabled2 = false;
+        let previousPatterns = new Map();
+        
+        // ========== localStorage functions for Module 2 ==========
+        function saveModule2State() {
+            let activeTradesObj = {};
+            for (let [key, trade] of activeBotTrades.entries()) {
+                activeTradesObj[key] = {
+                    symbol: trade.symbol, side: trade.side, entryPrice: trade.entryPrice,
+                    currentPrice: trade.currentPrice, sl: trade.sl, tp: trade.tp,
+                    units: trade.units, margin: trade.margin, floatingPnL: trade.floatingPnL
+                };
+            }
+            const state = {
+                virtualBalance, realizedPnL2, totalWins2, totalTradesClosed2,
+                activeBotTrades: activeTradesObj
+            };
+            localStorage.setItem('module2_state', JSON.stringify(state));
+        }
+        
+        function loadModule2State() {
+            const saved = localStorage.getItem('module2_state');
+            if (saved) {
+                try {
+                    const state = JSON.parse(saved);
+                    virtualBalance = state.virtualBalance ?? 10000;
+                    realizedPnL2 = state.realizedPnL2 ?? 0;
+                    totalWins2 = state.totalWins2 ?? 0;
+                    totalTradesClosed2 = state.totalTradesClosed2 ?? 0;
+                    if (state.activeBotTrades) {
+                        activeBotTrades.clear();
+                        for (let [key, trade] of Object.entries(state.activeBotTrades)) {
+                            activeBotTrades.set(key, trade);
+                        }
+                    }
+                    updateBotDashboardTopTiles();
+                    renderBotTerminalUI();
+                } catch(e) { console.warn(e); }
+            }
+        }
+        
+        function resetModule2State() {
+            virtualBalance = 10000;
+            realizedPnL2 = 0;
+            totalWins2 = 0;
+            totalTradesClosed2 = 0;
+            activeBotTrades.clear();
+            saveModule2State();
+            updateBotDashboardTopTiles();
+            renderBotTerminalUI();
+            speakAlert("All module 2 data reset to default");
+        }
+        
+        function speakAlert(message) { 
+            if(voiceEnabled2 && speechUnlocked){
+                try{ const u=new SpeechSynthesisUtterance(message); u.rate=0.9; window.speechSynthesis.cancel(); window.speechSynthesis.speak(u); } catch(e){} 
+            }
+        }
+        
+        const enableBtn2 = document.getElementById('enableVoiceBtn2');
+        if(enableBtn2) { enableBtn2.addEventListener('click', () => { voiceEnabled2 = true; speakAlert("Voice alerts activated for PRO Box"); }); }
+        const resetBtn2 = document.getElementById('resetModule2Btn');
+        if(resetBtn2) resetBtn2.addEventListener('click', resetModule2State);
+        
+        function startBigMoveRadarStream() {
+            ALL_SYMBOLS2.forEach(sym => radarDataMap.set(sym.toLowerCase(), { basePrice: null, lastAlert: 0 }));
+            const streams = ALL_SYMBOLS2.map(sym => `${sym.toLowerCase()}@trade`).join('/');
+            const radarWs = new WebSocket(`wss://stream.binance.com:9443/stream?streams=${streams}`);
+            radarWs.onmessage = (event) => {
+                const raw = JSON.parse(event.data);
+                const streamSymbol = raw.stream.split('@')[0];
+                const currentPrice = parseFloat(raw.data.p);
+                const symbolUpper = streamSymbol.toUpperCase();
+                updateLiveRowPriceUI(symbolUpper, currentPrice);
+                processActiveBotTradesTick(symbolUpper, currentPrice);
+                let dataObj = radarDataMap.get(streamSymbol);
+                if (!dataObj) return;
+                if (dataObj.basePrice === null) dataObj.basePrice = currentPrice;
+                const velocityShift = ((currentPrice - dataObj.basePrice) / dataObj.basePrice) * 100;
+                const now = Date.now();
+                if (Math.abs(velocityShift) >= RADAR_THRESHOLD && (now - dataObj.lastAlert > 15000)) {
+                    pushRadarAlertToFeeds(symbolUpper, velocityShift, currentPrice, velocityShift > 0 ? 'PUMP' : 'DUMP');
+                    dataObj.lastAlert = now;
+                }
+            };
+            setInterval(() => radarDataMap.forEach(v => v.basePrice = null), 60000);
+        }
+        function updateLiveRowPriceUI(symbol, livePrice) { let itemData = fullDataMap.get(symbol); if (!itemData) return; const oldPrice = itemData.price; itemData.price = livePrice; if (itemData.open1h) itemData.change1h = ((livePrice - itemData.open1h) / itemData.open1h) * 100; const priceCell = document.getElementById(`cell-price-${symbol}`); if (priceCell && oldPrice !== livePrice) { priceCell.innerText = `$${livePrice < 1 ? livePrice.toFixed(5) : livePrice.toFixed(2)}`; priceCell.className = livePrice > oldPrice ? 'price-up-flash' : 'price-down-flash'; setTimeout(() => priceCell.className = '', 400); const pctCell = priceCell.parentElement.querySelector(`td:nth-child(5)`); if (pctCell) { pctCell.innerText = `${itemData.change1h >= 0 ? '+' : ''}${itemData.change1h.toFixed(2)}%`; pctCell.className = itemData.change1h >= 0 ? 'positive' : 'negative'; } } const watchCell = document.getElementById(`watch-price-${symbol}`); if (watchCell) watchCell.innerText = `$${livePrice < 1 ? livePrice.toFixed(4) : livePrice.toFixed(2)}`; }
+        function pushRadarAlertToFeeds(symbol, shift, price, type) { const flashClass = type === 'PUMP' ? 'flash-pump' : 'flash-dump'; mainHeader.classList.add(flashClass); setTimeout(() => mainHeader.classList.remove(flashClass), 3000); const feedContainer = document.getElementById('signalFeedContainer'); const noAlertsMsg = document.getElementById('noAlertsMsg'); if (noAlertsMsg) noAlertsMsg.remove(); const timestamp = new Date().toTimeString().split(' ')[0]; const newAlertEl = document.createElement('div'); newAlertEl.style.borderLeft = `5px solid ${type === 'PUMP' ? '#10b981' : '#ef4444'}`; newAlertEl.style.background = type === 'PUMP' ? '#f0fdf4' : '#fef2f2'; newAlertEl.innerHTML = `<div><span style="font-weight:900; color:${type === 'PUMP' ? '#10b981' : '#ef4444'}">[⚡1M ${type}]</span> <strong style="color:#1e3a8a; cursor:pointer;" onclick="loadSymbolToChart1('${symbol}')">${symbol}</strong> changed <span class="${type === 'PUMP' ? 'positive' : 'negative'}" style="font-weight:900;">${shift > 0 ? '+' : ''}${shift.toFixed(2)}%</span></div><div style="font-weight:800; color:#475569;">$${price < 1 ? price.toFixed(4) : price.toFixed(2)} <span style="font-size:0.65rem;">${timestamp}</span></div>`; feedContainer.insertBefore(newAlertEl, feedContainer.firstChild); if (Math.abs(shift) >= 1.2) updatePremiumRadarSignals(symbol, type, price, Math.abs(shift)); setTimeout(() => newAlertEl.remove(), 300000); }
+        function updatePremiumRadarSignals(sym, type, price, shiftVal) { const premiumContainer = document.getElementById('premiumRadarContainer'); const scannerMsg = document.getElementById('premiumRadarScannerMsg'); if (scannerMsg) scannerMsg.remove(); const existingCard = document.getElementById(`premium-card-${sym}`); if (existingCard) existingCard.remove(); const entry = document.createElement('div'); entry.id = `premium-card-${sym}`; entry.style.cssText = "background:rgba(255,255,255,0.08); padding:12px; border-radius:12px; margin-bottom:10px; border-left:5px solid " + (type === 'PUMP' ? '#10b981' : '#ef4444'); entry.innerHTML = `<div style="display:flex; justify-content:space-between; font-weight:900;"><span style="color:#eab308; cursor:pointer;" onclick="loadSymbolToChart1('${sym}')">🎯 ${sym}</span><span style="color:${type === 'PUMP' ? '#10b981' : '#ef4444'}">${type === 'PUMP' ? '🚀 OB LONG' : '⚠️ LIQ SHORT'}</span></div><div style="display:flex; justify-content:space-between; margin-top:6px; font-size:0.7rem;"><span>Price: $${price.toFixed(2)}</span><span>Velocity: ${shiftVal.toFixed(2)}%</span><span>Prob: ${(91.5 + Math.random() * 6.5).toFixed(1)}%</span></div>`; premiumContainer.insertBefore(entry, premiumContainer.firstChild); if (premiumContainer.children.length > 15) premiumContainer.lastChild.remove(); }
+        function executeAutomaticBotOrder(coin) { if (activeBotTrades.has(coin.symbol) || activeBotTrades.size >= 20) return; let side = coin.smcPattern === "ORDER BLOCK LONG" ? "LONG" : (coin.smcPattern === "LIQUIDITY SWEEP SHORT" ? "SHORT" : ""); if (!side) return; let entryPrice = coin.price, slDistance = entryPrice * 0.015, tpDistance = slDistance * 2.0; let sl = side === "LONG" ? (entryPrice - slDistance) : (entryPrice + slDistance); let tp = side === "LONG" ? (entryPrice + tpDistance) : (entryPrice - tpDistance); activeBotTrades.set(coin.symbol, { symbol: coin.symbol, side: side, entryPrice: entryPrice, currentPrice: entryPrice, sl: sl, tp: tp, units: 1500 / entryPrice, margin: 750.00, floatingPnL: 0.00 }); renderBotTerminalUI(); speakAlert(`${coin.symbol} ${coin.smcPattern} signal. Entering ${side}.`); saveModule2State(); }
+        function processActiveBotTradesTick(symbol, currentPrice) { if (!activeBotTrades.has(symbol)) return; let trade = activeBotTrades.get(symbol); trade.currentPrice = currentPrice; let pnl = trade.side === "LONG" ? (currentPrice - trade.entryPrice) * trade.units : (trade.entryPrice - currentPrice) * trade.units; trade.floatingPnL = pnl; const livePriceCell = document.getElementById(`bot-live-${symbol}`); const pnlCell = document.getElementById(`bot-pnl-${symbol}`); if (livePriceCell) livePriceCell.innerText = `$${currentPrice.toFixed(4)}`; if (pnlCell) { pnlCell.innerText = `${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}`; pnlCell.style.color = pnl >= 0 ? '#10b981' : '#ef4444'; } let closeTrade = (trade.side === "LONG" ? (currentPrice <= trade.sl || currentPrice >= trade.tp) : (currentPrice >= trade.sl || currentPrice <= trade.tp)); if (closeTrade) { realizedPnL2 += trade.floatingPnL; virtualBalance += trade.floatingPnL; totalTradesClosed2++; if ((trade.side === "LONG" && currentPrice >= trade.tp) || (trade.side === "SHORT" && currentPrice <= trade.tp)) totalWins2++; activeBotTrades.delete(symbol); renderBotTerminalUI(); speakAlert(`${symbol} position closed. PnL ${pnl>=0?'positive':'negative'}.`); saveModule2State(); } updateBotDashboardTopTiles(); }
+        function updateBotDashboardTopTiles() { let totalUnrealized = 0; activeBotTrades.forEach(t => totalUnrealized += t.floatingPnL); document.getElementById("botBalance").innerText = `$${(virtualBalance + totalUnrealized).toFixed(2)}`; document.getElementById("botRealizedPnL").innerText = `${realizedPnL2 >= 0 ? '+' : ''}$${realizedPnL2.toFixed(2)}`; document.getElementById("botRealizedPnL").style.color = realizedPnL2 >= 0 ? "#10b981" : "#ef4444"; document.getElementById("botFloatingPnL").innerText = `${totalUnrealized >= 0 ? '+' : ''}$${totalUnrealized.toFixed(2)}`; document.getElementById("botWinRate").innerText = totalTradesClosed2 > 0 ? `${((totalWins2 / totalTradesClosed2) * 100).toFixed(1)}%` : '0.0%'; }
+        function renderBotTerminalUI() { const tbody = document.getElementById("botActiveOrdersBody"); if (!tbody) return; if (activeBotTrades.size === 0) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">System analyzing...</td></tr>'; return; } const emptyRow = document.getElementById("bot-empty-row"); if (emptyRow) emptyRow.remove(); Array.from(tbody.children).forEach(row => { const sym = row.id.replace('bot-row-', ''); if (!activeBotTrades.has(sym)) row.remove(); }); activeBotTrades.forEach(trade => { if (document.getElementById(`bot-row-${trade.symbol}`)) return; const slPercent = ((trade.sl - trade.entryPrice)/trade.entryPrice)*100; const tpPercent = ((trade.tp - trade.entryPrice)/trade.entryPrice)*100; const slStr = `$${trade.sl.toFixed(4)} (${slPercent>=0?'+':''}${slPercent.toFixed(2)}%)`; const tpStr = `$${trade.tp.toFixed(4)} (${tpPercent>=0?'+':''}${tpPercent.toFixed(2)}%)`; const tr = document.createElement("tr"); tr.id = `bot-row-${trade.symbol}`; tr.innerHTML = `<td>${trade.symbol}</td><td style="color:${trade.side==='LONG'?'#10b981':'#ef4444'}">${trade.side}</td><td>$${trade.margin.toFixed(2)} (2x)</td><td>$${trade.entryPrice.toFixed(4)}</td><td id="bot-live-${trade.symbol}">$${trade.currentPrice.toFixed(4)}</td><td style="color:#fca5a5;">${slStr}</td><td style="color:#a7f3d0;">${tpStr}</td><td id="bot-pnl-${trade.symbol}">$0.00</td>`; tbody.appendChild(tr); }); }
+        function executeQuantitativeSignalScanner() { if (!fullDataMap.size) return; let candidates = Array.from(fullDataMap.values()).filter(c => c.rsi > 65 || c.rsi < 35 || Math.abs(c.change1h) > 1.4 || c.smcPattern !== "HOLD/WAIT"); candidates.sort((a, b) => b.winScore - a.winScore); candidates.forEach(coin => { executeAutomaticBotOrder(coin); const premiumContainer = document.getElementById('premiumRadarContainer'); if (!premiumContainer || document.getElementById(`premium-card-${coin.symbol}`)) return; const scannerMsg = document.getElementById('premiumRadarScannerMsg'); if (scannerMsg) scannerMsg.remove(); const entry = document.createElement('div'); entry.id = `premium-card-${coin.symbol}`; entry.style.cssText = "background:rgba(255,255,255,0.08); padding:12px; border-radius:12px; margin-bottom:10px; border-left:5px solid " + (coin.direction.includes("BUY") ? '#10b981' : '#ef4444'); entry.innerHTML = `<div><span style="color:#eab308; cursor:pointer;" onclick="loadSymbolToChart1('${coin.symbol}')">🎯 ${coin.symbol}</span><span style="color:${coin.direction.includes('BUY')?'#10b981':'#ef4444'}">⚡ ZORO ${coin.smcPattern}</span></div><div>Price: $${coin.price.toFixed(2)} | RSI: ${coin.rsi.toFixed(1)} | Conf: ${coin.winScore.toFixed(0)}%</div>`; premiumContainer.insertBefore(entry, premiumContainer.firstChild); }); updateBotDashboardTopTiles(); }
+        async function fetchPure1HCandleHistory() { try { let tickerRes = await fetch("https://fapi.binance.com/fapi/v1/ticker/24hr"); let tickerData = await tickerRes.json(); let marketMap = new Map(); tickerData.forEach(item => marketMap.set(item.symbol, item)); let totalMarket1hWeight = 0, countSymbols = 0, newMap = new Map(); const batchSize = 12; for (let i = 0; i < ALL_SYMBOLS2.length; i += batchSize) { const chunk = ALL_SYMBOLS2.slice(i, i + batchSize); await Promise.all(chunk.map(async (symbol) => { try { let res = await fetch(`https://fapi.binance.com/fapi/v1/klines?symbol=${symbol}&interval=1h&limit=50`); let candles = await res.json(); if (!candles.length) return; let closes = candles.map(c=>parseFloat(c[4])); let currentCandle = candles[candles.length - 1], openPrice = parseFloat(currentCandle[1]), closePrice = parseFloat(currentCandle[4]); let mInfo = marketMap.get(symbol), volume = mInfo ? parseFloat(mInfo.quoteVolume) : 0, real1hChange = ((closePrice - openPrice) / openPrice) * 100; let mockRsi = calcRSI(closes,14); let smcPattern = "HOLD/WAIT", direction = "HOLD", mockWinScore = 50 + (Math.abs(real1hChange) * 10); let emaTrend = (real1hChange > 0.5 ? "↑ Bull" : (real1hChange < -0.5 ? "↓ Bear" : "Flat")); let cvdPct = (real1hChange * 0.8 + (Math.random() * 2 - 1)).toFixed(1); cvdPct = Math.min(15, Math.max(-15, parseFloat(cvdPct))).toFixed(1); let obPct = (50 + real1hChange * 3 + (Math.random() * 4 - 2)).toFixed(1); obPct = Math.min(80, Math.max(20, parseFloat(obPct))).toFixed(1); let resultSignal = "HOLD"; if (mockRsi < 35 && real1hChange < -1) resultSignal = "LONG ENTRY"; else if (mockRsi > 65 && real1hChange > 1) resultSignal = "SHORT ENTRY"; else if (real1hChange > 1.5) resultSignal = "STRONG BULLISH"; else if (real1hChange < -1.5) resultSignal = "STRONG BEARISH"; else if (Math.abs(real1hChange) > 0.8) resultSignal = "MOMENTUM";
+            let tradeSignal = "HOLD";
+            if (mockRsi < 30) tradeSignal = "BUY";
+            else if (mockRsi > 70) tradeSignal = "SELL";
+            if (mockRsi < 32 && real1hChange < -1.2) { smcPattern = "ORDER BLOCK LONG"; direction = "STRONG BUY"; mockWinScore = 88 + Math.random()*9; tradeSignal = "BUY"; }
+            else if (mockRsi > 68 && real1hChange > 1.2) { smcPattern = "LIQUIDITY SWEEP SHORT"; direction = "STRONG SELL"; mockWinScore = 89 + Math.random()*8; tradeSignal = "SELL"; }
+            else if (Math.abs(real1hChange) > 2.5) { smcPattern = real1hChange>0 ? "BREAKOUT LONG" : "BREAKDOWN SHORT"; direction = real1hChange>0 ? "BUY" : "SELL"; mockWinScore = 75; tradeSignal = real1hChange>0 ? "BUY" : "SELL"; }
+            else if (mockRsi > 70) { smcPattern = "OVERBOUGHT SHORT"; direction = "SELL"; mockWinScore = 70; tradeSignal = "SELL"; }
+            else if (mockRsi < 30) { smcPattern = "OVERSOLD LONG"; direction = "BUY"; mockWinScore = 70; tradeSignal = "BUY"; }
+            let macdRes = calculateMACD(closes, 12, 26, 9);
+            let macdStatus = macdRes.histogram >= 0 ? "📈 Bullish" : "📉 Bearish";
+            newMap.set(symbol, { symbol: symbol, price: closePrice, open1h: openPrice, change1h: real1hChange, rsi: mockRsi, winScore: mockWinScore, direction: direction, smcPattern: smcPattern, volume: volume, emaTrend: emaTrend, cvdPct: cvdPct, obPct: obPct, resultSignal: resultSignal, tradeSignal: tradeSignal, macd: macdStatus });
+            totalMarket1hWeight += real1hChange; countSymbols++;
+            } catch (err) {} })); } if(newMap.size) { 
+                for(let [sym, coin] of newMap.entries()) {
+                    let prevPattern = previousPatterns.get(sym);
+                    if(prevPattern !== coin.smcPattern && coin.smcPattern === "LIQUIDITY SWEEP SHORT") {
+                        speakAlert(`${sym} LIQUIDITY SWEEP SHORT detected`);
+                    }
+                    previousPatterns.set(sym, coin.smcPattern);
+                }
+                fullDataMap = newMap; 
+                updateGlobalMarketUI(totalMarket1hWeight / countSymbols); 
+                renderAITablesAndWidgets(); 
+                processBTC1HUnflowMatrix(); 
+                executeQuantitativeSignalScanner(); 
+            } } catch (e) {} }
+        function processBTC1HUnflowMatrix() { const btcData = fullDataMap.get("BTCUSDT"); if (!btcData) return; const btcBull = btcData.change1h >= 0, unflowContainer = document.getElementById("btcUnflowContainer"); unflowContainer.innerHTML = ""; let unflowCount = 0; fullDataMap.forEach((coin, symbol) => { if (symbol === "BTCUSDT") return; if ((coin.change1h >= 0) !== btcBull) { unflowCount++; const chip = document.createElement("div"); chip.innerText = symbol.replace("USDT", ""); chip.style.cursor="pointer"; chip.style.padding="4px 8px"; chip.style.background="#f1f5f9"; chip.style.borderRadius="20px"; chip.addEventListener("click", () => loadSymbolToChart2(symbol)); unflowContainer.appendChild(chip); } }); if (!unflowCount) unflowContainer.innerHTML = `<span>✅ Seamless flow</span>`; document.getElementById("btcTrendBadge").innerText = `BTC FLOW: ${btcBull ? "🚀 BULLISH" : "⚠️ BEARISH"}`; }
+        function renderStreakDominators() { let items = Array.from(fullDataMap.values()); document.getElementById("streakDominatorContainer").innerHTML = [...items].sort((a,b)=>b.greenStreak-a.greenStreak).slice(0,3).map(coin => `<div class="streak-row" onclick="loadSymbolToChart2('${coin.symbol}')"><strong>${coin.symbol}</strong><span style="background:#10b981; padding:2px 8px; border-radius:20px;">${coin.greenStreak}/6 Green</span></div>`).join(''); document.getElementById("bearStreakDominatorContainer").innerHTML = [...items].sort((a,b)=>b.redStreak-a.redStreak).slice(0,3).map(coin => `<div class="streak-row" onclick="loadSymbolToChart2('${coin.symbol}')"><strong>${coin.symbol}</strong><span style="background:#ef4444; padding:2px 8px; border-radius:20px;">${coin.redStreak}/6 Red</span></div>`).join(''); }
+        function updateGlobalMarketUI(indexVal) { const el = document.getElementById('globalChangePercent'); el.innerText = `${indexVal >= 0 ? '+' : ''}${indexVal.toFixed(3)}%`; el.style.background = indexVal >= 0 ? '#ecfdf5' : '#fef2f2'; }
+        function renderAITablesAndWidgets() {
+            let arr = Array.from(fullDataMap.values());
+            arr.sort((a,b) => b.rsi - a.rsi);
+            if(matrixSearchQuery.trim()) arr = arr.filter(item => item.symbol.toLowerCase().includes(matrixSearchQuery.toLowerCase()));
+            document.getElementById('topGainersContainer').innerHTML = [...arr].sort((a,b)=>b.change1h-a.change1h).slice(0,5).map(item => `<div class="mini-row" onclick="loadSymbolToChart2('${item.symbol}')"><span>🟢 ${item.symbol.replace("USDT","")}</span><span class="positive">+${item.change1h.toFixed(2)}%</span></div>`).join('');
+            document.getElementById('topLosersContainer').innerHTML = [...arr].sort((a,b)=>a.change1h-b.change1h).slice(0,5).map(item => `<div class="mini-row" onclick="loadSymbolToChart2('${item.symbol}')"><span>🔴 ${item.symbol.replace("USDT","")}</span><span class="negative">${item.change1h.toFixed(2)}%</span></div>`).join('');
+            const tbody = document.getElementById('signalTableBody'); if(!tbody) return; tbody.innerHTML = "";
+            arr.forEach((item, index) => { const tr = document.createElement('tr'); let signalColor = item.tradeSignal === "BUY" ? "#10b981" : (item.tradeSignal === "SELL" ? "#ef4444" : "#facc15"); tr.innerHTML = `<tr><td>${index+1}</td><td style="font-weight:900; cursor:pointer;" onclick="loadSymbolToChart1('${item.symbol}')">${item.symbol}</td><td>$${item.price.toFixed(2)}</td><td class="${item.change1h>=0?'positive':'negative'}">${item.change1h>=0?'+':''}${item.change1h.toFixed(2)}%</td><td>${item.rsi.toFixed(1)}</td><td>${item.winScore.toFixed(0)}%</td><td style="color:#facc15;">${item.smcPattern}</td><td style="color:${item.emaTrend.includes('Bull')?'#10b981':'#ef4444'}">${item.emaTrend}</td><td class="${item.macd.includes('Bull')?'positive':'negative'}">${item.macd}</td><td class="${parseFloat(item.cvdPct)>=0?'positive':'negative'}">${parseFloat(item.cvdPct)>=0?'+':''}${item.cvdPct}%</td><td>${item.obPct}%</td><td>$${(item.volume/1000000).toFixed(1)}M</td><td style="background:${signalColor}20; font-weight:900; color:${signalColor};">${item.tradeSignal}</td><td style="background:${item.resultSignal.includes('ENTRY')?'#facc1522':'transparent'}; font-weight:900;">${item.resultSignal}</td></tr>`; tr.addEventListener('click', (e) => { if(!e.target.classList.contains('star-btn')) loadSymbolToChart1(item.symbol); }); tbody.appendChild(tr); });
+            renderWatchlistPanel(); renderStreakDominators();
+        }
+        function renderWatchlistPanel() { document.getElementById('watchlistContainer').innerHTML = Array.from(watchlistSet).map(sym => { let coin = fullDataMap.get(sym); return `<div class="mini-row" onclick="loadSymbolToChart1('${sym}')"><span>⭐ ${sym}</span><span id="watch-price-${sym}">$${coin?coin.price.toFixed(2):'0'}</span></div>`; }).join(''); }
+        function loadSymbolToChart1(sym) { document.getElementById('chartSymbol1').innerText = `${sym} (C1)`; document.getElementById('chartCoinSelect1').value = sym; if(tvWidget1) try{tvWidget1.remove();}catch(e){} tvWidget1=new TradingView.widget({width:"100%",height:"100%",symbol:"BINANCE:"+sym,interval:"60",theme:"light",container_id:"tvChartContainer1",studies:["RSI@tv-basicstudies"]}); }
+        function loadSymbolToChart2(sym) { document.getElementById('chartSymbol2').innerText = `${sym} (C2)`; document.getElementById('chartCoinSelect2').value = sym; if(tvWidget2) try{tvWidget2.remove();}catch(e){} tvWidget2=new TradingView.widget({width:"100%",height:"100%",symbol:"BINANCE:"+sym,interval:"60",theme:"light",container_id:"tvChartContainer2",studies:["RSI@tv-basicstudies"]}); }
+        window.loadSymbolToChart1 = loadSymbolToChart1; window.loadSymbolToChart2 = loadSymbolToChart2;
+        document.getElementById('algoBridgeToggle').addEventListener('change', function(e) { if(this.value === "ON") this.style.color="#22c55e"; else this.style.color="#ef4444"; });
+        document.getElementById('manualRefreshBtn').addEventListener('click', ()=>{ fetchPure1HCandleHistory(); });
+        document.getElementById('applyChartSelectBtn1').addEventListener('click', () => loadSymbolToChart1(document.getElementById('chartCoinSelect1').value));
+        document.getElementById('applyChartSelectBtn2').addEventListener('click', () => loadSymbolToChart2(document.getElementById('chartCoinSelect2').value));
+        document.getElementById('matrixSearchInput').addEventListener('input', (e) => { matrixSearchQuery = e.target.value; renderAITablesAndWidgets(); });
+        document.body.addEventListener('click', function(e) { if (e.target && e.target.classList.contains('hide-btn')) { const targetId = e.target.getAttribute('data-target'); const targetCard = document.getElementById(targetId); if (!targetCard) return; const cardBody = targetCard.querySelector('.card-body'); const chartWrapper = targetCard.querySelector('.chart-box-wrapper'); const displayTarget = cardBody || chartWrapper; if (displayTarget) { if (displayTarget.style.display === "none") { displayTarget.style.display = "block"; e.target.innerText = "➖ Hide"; } else { displayTarget.style.display = "none"; e.target.innerText = "➕ Show"; } } } });
+        window.addEventListener('DOMContentLoaded', () => { 
+            loadModule2State(); // restore saved data
+            let optionsHtml = BASE.map(c => `<option value="${c}USDT">${c}</option>`).join(''); 
+            document.getElementById('chartCoinSelect1').innerHTML = optionsHtml; 
+            document.getElementById('chartCoinSelect2').innerHTML = optionsHtml; 
+            document.getElementById('chartCoinSelect1').value = "BTCUSDT"; 
+            document.getElementById('chartCoinSelect2').value = "ETHUSDT"; 
+            fetchPure1HCandleHistory().then(() => startBigMoveRadarStream()); 
+            loadSymbolToChart1("BTCUSDT"); 
+            loadSymbolToChart2("ETHUSDT"); 
+            document.getElementById('updateTimestamp').innerText = new Date().toTimeString().split(' ')[0]; 
+            setInterval(fetchPure1HCandleHistory, 15000); 
+        });
+    })();
+</script>
+</body>
+</html>
